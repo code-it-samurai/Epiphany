@@ -9,7 +9,7 @@ visit site - https://stark-meadow-89523.herokuapp.com/
 ![image](https://user-images.githubusercontent.com/50484582/113519413-8cd96080-95a9-11eb-83d8-09d5c82f8151.png)
 
 
-features:
+<h3>Features:</h3>
   <ul>
   <li>posting text</li>
   
