@@ -1,0 +1,592 @@
+<%- include('partials/header') %>
+<nav class="navigationbar">
+    	<div >
+  			<a class="navbar-brand" style="font-size: 30px;" href="#"><span style="color: #2cb1ee;">E</span>piphany</a>
+		</div>
+		<ul  class="navbar-nav">
+        <li class="nav-item dropleft">
+	        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	          	<div class="hamburger">
+		  			<div class="hamburger-div"></div>
+		  			<div class="hamburger-div"></div>
+		  			<div class="hamburger-div"></div>
+		  		</div>
+	        </a>
+	        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	          <a class="dropdown-item" id="openMyEpiphanies" href="#">my Epiphanies</a>
+	          <div class="dropdown-divider"></div> 
+	          <a class="dropdown-item logout-btn" href="/logout" role="button">Log Out</a>
+	        </div>
+     	 </li>
+    </ul>
+</nav>
+<div class="top-topic-section" id="top-topic-section">
+	<button class="scroll-left-btn"><img src="media\next.png" class="scroll-left-img"></button>
+	<div class="topics-div">
+		<div class="topic topic-all">All</div><div class="topic topic-showerthoughts">ShowerThoughts</div><div class="topic topic-news">News</div><div class="topic topic-funny">Funny</div><div class="topic topic-educational">Educational</div>
+	</div>
+	<button class="scroll-right-btn"><img src="media\next.png" class="scroll-right-img"></button>
+</div>
+
+
+
+
+
+<!-- publish floating box -->
+<div id="myModal" class="modal">
+  <div class="modal-content" >
+    <div class="close">&times;</div>
+  	<div class="card modal-card">
+  		<div class="card-header">
+    		PUBLISH AN EPIPHANY
+  		</div>
+  		<div class="card-body">
+    		<form action="/epiphanies" method="POST" class="secretform">
+    			<div class="input-group flex-nowrap ip-group">
+			  		<span class="input-group-text ip-text-title" id="addon-wrapping">Title</span>
+		  			<input type="text" class="secretip" name="epiphanyTitle" aria-label="Username" aria-describedby="addon-wrapping">
+				</div>
+				<div class="input-group flex-nowrap ip-group">
+					<span class="input-group-text ip-text" id="addon-wrapping"><span style="color:blue;">E</span>piphany</span>
+		  			<input type="text" class="secretip-epiphany" name="epiphanyText" aria-label="Username" aria-describedby="addon-wrapping">
+				</div>
+				    <div class="category-dropdown">
+				    	<div class="radio-btn-div"><input type="radio" id="non-categorized" class="category-radio-buttons" name="category" value="non-categorized" checked><label for="non-categorized" class=category-name-labels>Non-categorized</label></div>
+
+				    	<div class="radio-btn-div"><input type="radio" id="showerthoughts" class="category-radio-buttons" name="category" value="showerthoughts"><label for="showerthoughts" class=category-name-labels>ShowerThoughts</label></div>
+
+				    	<div class="radio-btn-div"><input type="radio" id="news" class="category-radio-buttons" name="category" value="news"><label for="news" class=category-name-labels>News</label>
+				    	<input type="radio" id="funny" class="category-radio-buttons" name="category" value="funny"><label for="funny" class=category-name-labels>Funny</label></div>
+
+				    	<div class="radio-btn-div"><input type="radio" id="educational" class="category-radio-buttons" name="category" value="educational"><label for="educational" class=category-name-labels>Educational</label></div>
+					</div>
+				<div class="submit-btn-div">
+		  			<button type="submit" class="btn btn-primary publish-btn">publish</button>
+		  		</div>
+			</form>
+  		</div>
+	</div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Check my epiphanies  -->
+<!-- The Modal -->
+<div id="myEpiphanyModal" class="myEpiphanyModal">
+  <div class="modal-content-myEpiphany">
+    <span class="closeMyEpiphanies">&times;</span>
+    <div class="card modal-card">
+  		<div class="card-header">
+  			YOUR EPIPHANIES
+  		</div>
+	  	<div class="card-body overflow-scroll">
+			<%currentUser.epiphanies.forEach(function(userepiphany){ %>
+				<div class="card border-primary epiphany-content-card">
+				  	<div class="card-body text-primary">
+						<h5 class="card-title"><%=userepiphany.epiphanyTitle%></h5>
+				    	<p class="card-text"><%=userepiphany.epiphany%></p>
+			  		</div>
+			  		<div class="card-footer" id="card-footer">
+			  			<div class="author-name"><%=userepiphany.author.authorName%></div>
+			  			
+			  			<form action="/vote/<%=currentUser.id%>/<%=userepiphany.id%>" method="post">
+			  				<button type="submit" id="up-btn" class="vote-btn" value="upvote" name="vote"><img src="media\up-arrow-unclicked.png" class="upvote-btn-img" id="upvote-btn-img"></button>
+			  				<%postvotes.forEach(function(voteinfo){%>
+			  					<%if(voteinfo.postId == userepiphany.id){%>
+			  						<span class="voteCount"><%=voteinfo.voteCount%></span>
+					  			<%}%>
+					  		<%})%>
+			  				<button type="submit" class="vote-btn" value="downvote" name="vote" ><img src="media\down-arrow-unclicked.png" id="downvote-btn-img" class="downvote-btn-img"></button>
+			  			</form>
+			  		</div>
+				</div>
+			<%})%>
+  		</div>
+  	</div>
+  </div>
+</div>
+<!-- up arrow and down arrow png credits to pixel perfect from flaticon.com -->
+<!-- bulb image credit to freepik from flaticon -->
+
+<!-- ALL -->
+<div class="main-content-div all-content" id="all-content-div">
+	<%feedEpiphanies.forEach(function(epiphany){ %>
+		<div class="card epiphany-content-card">
+		  	<div class="card-body text-primary">
+				<h5 class="card-title"><%=epiphany.epiphanyTitle%></h5>
+		    	<p class="card-text"><%=epiphany.epiphany%></p>
+	  		</div>
+	  		<div class="epiphany-category"><%=epiphany.epiphanyCategory%></div>
+	  		<div class="card-footer" id="card-footer">
+	  			<div class="author-name"><%=epiphany.author.authorName%></div>
+	  			
+	  			<form action="/vote/<%=currentUser.id%>/<%=epiphany.id%>" method="post"  id="refonvote">
+	  				<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.upvoters.forEach(function(upvoter){%>
+	  							<%if(upvoter.id == currentUser.id){%>
+	  								<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-clicked.png" class="upvote-btn-img" id="upvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-unclicked.png" class="upvote-btn-img" id="upvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<span class="voteCount"><%=voteinfo.voteCount%></span>
+			  			<%}%>
+			  		<%})%>
+
+			  		<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.downvoters.forEach(function(downvoter){%>
+	  							<%if(downvoter.id == currentUser.id){%>
+	  								<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote" ><img src="media\down-arrow-clicked.png" id="downvote-btn-img" class="downvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote"><img src="media\down-arrow-unclicked.png" class="downvote-btn-img" id="downvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+	  			</form>
+	  		</div>
+		</div>
+	<%})%>
+</div>
+
+<!-- SHOWER THOUGHTS -->
+<div class="main-content-div showerthoughts-content" id="st-content-div">
+	<%feedEpiphanies.forEach(function(epiphany){ %>
+		<% if(epiphany.epiphanyCategory == 'showerthoughts'){ %>
+		<div class="card epiphany-content-card">
+		  	<div class="card-body text-primary">
+				<h5 class="card-title"><%=epiphany.epiphanyTitle%></h5>
+		    	<p class="card-text"><%=epiphany.epiphany%></p>
+	  		</div>
+	  		<div class="epiphany-category"><%=epiphany.epiphanyCategory%></div>
+	  		<div class="card-footer" id="card-footer">
+	  			<div class="author-name"><%=epiphany.author.authorName%></div>
+	  			
+	  			<form action="/vote/<%=currentUser.id%>/<%=epiphany.id%>" method="post" id="refonvote">
+	  				<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.upvoters.forEach(function(upvoter){%>
+	  							<%if(upvoter.id == currentUser.id){%>
+	  								<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-clicked.png" class="upvote-btn-img" id="upvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-unclicked.png" class="upvote-btn-img" id="upvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<span class="voteCount"><%=voteinfo.voteCount%></span>
+			  			<%}%>
+			  		<%})%>
+
+			  		<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.downvoters.forEach(function(downvoter){%>
+	  							<%if(downvoter.id == currentUser.id){%>
+	  								<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote" ><img src="media\down-arrow-clicked.png" id="downvote-btn-img" class="downvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote"><img src="media\down-arrow-unclicked.png" class="downvote-btn-img" id="downvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+	  			</form>
+	  		</div>
+		</div>
+		<%}%>
+	<%})%>
+</div>
+
+<!-- NEWS -->
+<div class="main-content-div news-content" id="n-content-div">
+	<%feedEpiphanies.forEach(function(epiphany){ %>
+		<% if(epiphany.epiphanyCategory == 'news'){ %>
+		<div class="card epiphany-content-card">
+		  	<div class="card-body text-primary">
+				<h5 class="card-title"><%=epiphany.epiphanyTitle%></h5>
+		    	<p class="card-text"><%=epiphany.epiphany%></p>
+	  		</div>
+	  		<div class="epiphany-category"><%=epiphany.epiphanyCategory%></div>
+	  		<div class="card-footer" id="card-footer">
+	  			<div class="author-name"><%=epiphany.author.authorName%></div>
+	  			
+	  			<form action="/vote/<%=currentUser.id%>/<%=epiphany.id%>" method="post" id="refonvote">
+	  				<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.upvoters.forEach(function(upvoter){%>
+	  							<%if(upvoter.id == currentUser.id){%>
+	  								<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-clicked.png" class="upvote-btn-img" id="upvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-unclicked.png" class="upvote-btn-img" id="upvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<span class="voteCount"><%=voteinfo.voteCount%></span>
+			  			<%}%>
+			  		<%})%>
+
+			  		<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.downvoters.forEach(function(downvoter){%>
+	  							<%if(downvoter.id == currentUser.id){%>
+	  								<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote" ><img src="media\down-arrow-clicked.png" id="downvote-btn-img" class="downvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote"><img src="media\down-arrow-unclicked.png" class="downvote-btn-img" id="downvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+	  			</form>
+	  		</div>
+		</div>
+		<%}%>
+	<%})%>
+</div>
+
+<!-- FUNNY -->
+<div class="main-content-div funny-content" id="f-content-div">
+	<%feedEpiphanies.forEach(function(epiphany){ %>
+		<% if(epiphany.epiphanyCategory == 'funny'){ %>
+		<div class="card epiphany-content-card">
+		  	<div class="card-body text-primary">
+				<h5 class="card-title"><%=epiphany.epiphanyTitle%></h5>
+		    	<p class="card-text"><%=epiphany.epiphany%></p>
+	  		</div>
+	  		<div class="epiphany-category"><%=epiphany.epiphanyCategory%></div>
+	  		<div class="card-footer" id="card-footer">
+	  			<div class="author-name"><%=epiphany.author.authorName%></div>
+	  			
+	  			<form action="/vote/<%=currentUser.id%>/<%=epiphany.id%>" method="post" id="refonvote">
+	  				<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.upvoters.forEach(function(upvoter){%>
+	  							<%if(upvoter.id == currentUser.id){%>
+	  								<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-clicked.png" class="upvote-btn-img" id="upvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-unclicked.png" class="upvote-btn-img" id="upvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<span class="voteCount"><%=voteinfo.voteCount%></span>
+			  			<%}%>
+			  		<%})%>
+
+			  		<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.downvoters.forEach(function(downvoter){%>
+	  							<%if(downvoter.id == currentUser.id){%>
+	  								<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote" ><img src="media\down-arrow-clicked.png" id="downvote-btn-img" class="downvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote"><img src="media\down-arrow-unclicked.png" class="downvote-btn-img" id="downvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+	  			</form>
+	  		</div>
+		</div>
+		<%}%>
+	<%})%>
+</div>
+
+<!-- EDUCATIONAL -->
+<div class="main-content-div educational-content" id="edu-content-div">
+	<%feedEpiphanies.forEach(function(epiphany){ %>
+		<% if(epiphany.epiphanyCategory == 'educational'){ %>
+		<div class="card epiphany-content-card">
+		  	<div class="card-body text-primary">
+				<h5 class="card-title"><%=epiphany.epiphanyTitle%></h5>
+		    	<p class="card-text"><%=epiphany.epiphany%></p>
+	  		</div>
+	  		<div class="epiphany-category"><%=epiphany.epiphanyCategory%></div>
+	  		<div class="card-footer" id="card-footer">
+	  			<div class="author-name"><%=epiphany.author.authorName%></div>
+	  			
+	  			<form action="/vote/<%=currentUser.id%>/<%=epiphany.id%>" method="post" id="refonvote">
+	  				<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.upvoters.forEach(function(upvoter){%>
+	  							<%if(upvoter.id == currentUser.id){%>
+	  								<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-clicked.png" class="upvote-btn-img" id="upvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="up-btn" class="vote-btn up-btn" value="upvote" name="vote"><img src="media\up-arrow-unclicked.png" class="upvote-btn-img" id="upvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<span class="voteCount"><%=voteinfo.voteCount%></span>
+			  			<%}%>
+			  		<%})%>
+
+			  		<%var clicked = false%>
+	  				<%postvotes.forEach(function(voteinfo){%>
+	  					<%if(voteinfo.postId == epiphany.id){%>
+	  						<%voteinfo.downvoters.forEach(function(downvoter){%>
+	  							<%if(downvoter.id == currentUser.id){%>
+	  								<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote" ><img src="media\down-arrow-clicked.png" id="downvote-btn-img" class="downvote-btn-img"></button>
+	  								<%clicked = true;%>
+	  							<%}%>
+	  						<%});%>
+	  					<%}%>
+	  				<%})%>
+	  				<%if(!clicked){%>
+	  					<button type="submit" id="down-btn" class="vote-btn down-btn" value="downvote" name="vote"><img src="media\down-arrow-unclicked.png" class="downvote-btn-img" id="downvoteimg"></button>
+	  				<%}%>
+	  				<%clicked = false%>	
+	  			</form>
+	  		</div>
+		</div>
+		<%}%>
+	<%})%>
+</div>
+
+
+<button id="myBtn" class="share-button"><img src="media\idea.png" height="35px"></button>
+
+<script>
+$(document).ready(function(){
+
+	// VOTE BUTTON ONCLICK CHANGES
+	// var blue = $('.voteCount').html();
+	// $('.voteCount').html();
+	$('.vote-btn').click(function(){
+		// $('#card-footer').load(window.location.href+" #card-footer")
+		console.log("ref footer")
+		$( "#main-content-div" ).load(window.location.href + " #main-content-div" );
+
+	})
+
+	// TOPIC SELECTION SYS
+	function removeAllContent(){
+		$('.main-content-div').each(function(){
+			$(this).hide()
+		});
+	}
+	removeAllContent();
+	$('.all-content').show();
+	var allTopics = $('.topic-all');
+	var topic_showerthoughts = $('.topic-showerthoughts');
+	var topic_funny = $('.topic-funny');
+	var topic_news = $('.topic-news');
+	var topic_educational = $('.topic-educational');
+
+	allTopics.click(function(){
+		$('.topic').each(function(){
+			$(this).removeClass("clicked");
+		});
+		removeAllContent();
+		$('.all-content').show();
+		allTopics.toggleClass("clicked");
+		$( "#main-content-div" ).load(window.location.href + " #all-content-div" );
+
+	});
+	
+	topic_showerthoughts.click(function(){
+		$('.topic').each(function(){
+			$(this).removeClass("clicked");
+		});
+		removeAllContent();
+		$('.showerthoughts-content').show();
+		topic_showerthoughts.toggleClass("clicked");
+		$( "#main-content-div" ).load(window.location.href + " #st-content-div" );
+
+	});
+
+	topic_funny.click(function(){
+		$('.topic').each(function(){
+			$(this).removeClass("clicked");
+		});
+		removeAllContent();
+		$('.funny-content').show();
+		topic_funny.toggleClass("clicked");
+		$( "#main-content-div" ).load(window.location.href + " #f-content-div" );
+
+	});
+
+	topic_news.click(function(){
+		$('.topic').each(function(){
+			$(this).removeClass("clicked");
+		});
+		removeAllContent();
+		$('.news-content').show();
+		topic_news.toggleClass("clicked");
+		$( "#main-content-div" ).load(window.location.href + " #n-content-div" );
+
+	});
+
+	topic_educational.click(function(){
+		$('.topic').each(function(){
+			$(this).removeClass("clicked");
+		});
+		removeAllContent();
+		$('.educational-content').show();
+		// $('.educational-content').removeClass("display-none");
+		topic_educational.toggleClass("clicked");
+		$( "#main-content-div" ).load(window.location.href + " #edu-content-div" );
+
+	});
+
+	// COOKIE CREATION AND RETRIEVING
+	function setCookie(cname, cvalue) {
+	  var d = new Date();
+	  d.setTime(d.getTime() + 60*60000);
+	  var expires = "expires="+ d.toUTCString();
+	  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	  console.log("cookie made")
+	}
+
+
+	$('.vote-btn').click(function(){
+		setCookie("scrollPosition",window.pageYOffset)
+		$( "#main-content-div" ).load(window.location.href + " #refonvote" );
+
+	});
+
+	function getCookie(cname) {
+	  var name = cname + "=";
+	  var decodedCookie = decodeURIComponent(document.cookie);
+	  var ca = decodedCookie.split(';');
+	  for(var i = 0; i <ca.length; i++) {
+	    var c = ca[i];
+	    while (c.charAt(0) == ' ') {
+	      c = c.substring(1);
+	    }
+	    if (c.indexOf(name) == 0) {
+	      return c.substring(name.length, c.length);
+	    }
+	  }
+	  return "";
+	}
+	var scrollpos = getCookie("scrollPosition");
+	console.log(scrollpos)
+	// // window.scrollTo({top:scrollpos; behavior:'smooth'})
+	$("html, body").animate({ scrollTop: scrollpos });
+
+
+	// TOPIC SECTION SCROLL FUNCTIONS
+	$('.scroll-left-btn').click(function() {
+	  event.preventDefault();
+	  var scrollpos = $('.topics-div').scrollTop();
+	  $('.topics-div').animate({
+	    scrollLeft: "-=200px"
+	  }, "slow");
+	});
+
+	$('.scroll-right-btn').click(function() {
+	  event.preventDefault();
+	  $('.topics-div').animate({
+	    scrollLeft: "+=200px"
+	  }, "slow");
+	});
+
+	// DIALOG BOX SETUP
+	var modal = document.getElementById("myModal");
+	var btn = document.getElementById("myBtn");
+	var span = document.getElementsByClassName("close")[0];
+
+
+	btn.onclick = function() {
+	  modal.style.display = "block";
+	}
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+	  modal.style.display = "none";
+	}
+
+	// MY EPIPHANY
+	// Get the modal
+	var modalMyEpiphany = document.getElementById("myEpiphanyModal");
+
+	// Get the button that opens the modal
+	var btnMyEpiphany = document.getElementById("openMyEpiphanies");
+
+	// Get the <span> element that closes the modal
+	var spanMyEpiphany = document.getElementsByClassName("closeMyEpiphanies")[0];
+
+	// When the user clicks the button, open the modal 
+	btnMyEpiphany.onclick = function() {
+	  modalMyEpiphany.style.display = "block";
+	}
+
+	// When the user clicks on <span> (x), close the modal
+	spanMyEpiphany.onclick = function() {
+	  	modalMyEpiphany.style.display = "none";
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+	  if (event.target == modal) {
+	    modal.style.display = "none";
+	  }else if(event.target == modalMyEpiphany){
+	    modalMyEpiphany.style.display = "none";
+	  }
+	}
+
+})
+</script>
+
+<%- include('partials/footer') %>
+
+<!-- credits -->0
+<!-- 
+<div>Icons made by <a href="" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->
