@@ -10,9 +10,14 @@ visit site - https://stark-meadow-89523.herokuapp.com/
 
 
 features:
-  posting text
-  upvote and downvote other posts
-  being able to see all the epiphanies posted by you
-  encrypted passport login and registration system
-  Google oauth2 authentication enabled/integrated with login and registration page
- 
+  <ul>
+  <li>posting text</li>
+  
+  <li>upvote and downvote other posts</li>
+  
+  <li>being able to see all the epiphanies posted by you</li>
+  
+  <li>encrypted passport login and registration system</li>
+  
+  <li>Google oauth2 authentication enabled/integrated with login and registration page</li>
+ </ul>
